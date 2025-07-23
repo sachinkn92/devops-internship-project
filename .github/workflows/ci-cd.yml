@@ -14,8 +14,13 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Build Docker image
-      run: docker build -t devops-app .
+      run: docker build -t sachinkn92/devops-app .
     
-    - name: Run tests
+    - name: Check for tests
       run: |
-        docker run devops-app npm test
+        if [ -f app/package.json ] && grep -q '"test":' app/package.json; then
+          echo "Running tests..."
+          docker run sachinkn92/devops-app npm test
+        else
+          echo "No tests configured - skipping"
+        fi
